@@ -32,7 +32,6 @@ namespace Agentie.Models
                         ArrivalTime = new DateTime(2020, 09, 17),
                         Documents = false
 
-
                     },
                      new Reservation
                      {
