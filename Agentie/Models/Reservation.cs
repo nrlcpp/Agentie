@@ -14,8 +14,13 @@ namespace Agentie.Models
         transport,
         others
     }
-  
-        public class Reservation
+    public enum Currency
+    {
+        EUR,
+        RON,
+        USD
+    }
+    public class Reservation
     {
             public long Id { get; set; }
 
@@ -27,7 +32,7 @@ namespace Agentie.Models
 
             public DateTime Date { get; set; }
 
-            public string Currency { get; set; }
+            public Currency Currency { get; set; }
 
             public Type Type { get; set; }
 
