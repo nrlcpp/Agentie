@@ -22,9 +22,37 @@ namespace Agentie.Controllers
 
         // GET: api/Reservations
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations()
+        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations(
+            [FromQuery] DateTime? from = null,
+            [FromQuery] DateTime? to = null)
         {
-            return await _context.Reservations.ToListAsync();
+            //Filters results by date
+            IQueryable<Reservation> result = _context.Reservations;
+
+            //if (from != null)
+            //{
+            //    result = result.Where(e => from <= e.Date);
+       
+            //}
+            //if (to != null)
+            //{
+            //    result = result.Where(e => e.Date <= to);
+            //}
+
+            if (from != null)
+            {
+                result = result.Where(e => from <= e.DepartureTime);
+
+            }
+            if (to != null)
+            {
+                result = result.Where(e => e.DepartureTime <= to);
+            }
+
+            var resultList = await result.ToListAsync();
+            return resultList;
+
+            //return await _context.Reservations.ToListAsync();
         }
 
         // GET: api/Reservations/5
