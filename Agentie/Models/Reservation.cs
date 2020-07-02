@@ -42,7 +42,7 @@ namespace Agentie.Models
 
             public Boolean Documents { get; set; }
 
-        //  public List<Comment> Comments { get; set; }
+            public List<Remarks> Remarks { get; set; }
     }
     }
 

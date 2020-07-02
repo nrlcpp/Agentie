@@ -11,6 +11,14 @@ namespace Agentie.Models
         }
 
         public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Remarks> Remarks { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Reservation>()
+                .HasMany(c => c.Remarks)
+                .WithOne(e => e.Reservation)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 
 }

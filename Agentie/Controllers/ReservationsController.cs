@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Agentie.Models;
+using Agentie.Dto;
 
 namespace Agentie.Controllers
 {
@@ -70,26 +71,48 @@ namespace Agentie.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Reservation>> GetReservation(long id)
         {
-            var reservation = await _context.Reservations.FindAsync(id);
+            var reservation = await _context.Reservations
+                .Include(r => r.Remarks)
+                .Select(r => new ReservationDtoDetail()
+                {
+                    Id = r.Id,
+                    Sum = r.Sum,
+                    Location = r.Location,
+                    Date = r.Date,
+                    Currency = r.Currency,
+                    Type = r.Type,
+                    DepartureTime = r.Date,
+                    ArrivalTime = r.Date,
+                    Documents = r.Documents,
+
+                    Remarks = r.Remarks.Select(o => new RemarksDtoDetail()
+                    {
+                        Id = o.Id,
+                        Agent = o.Agent,
+                        Content = o.Content,
+                        //Importance = o.Importance,
+                    })
+                }).SingleOrDefaultAsync(r => r.Id == id);
+
 
             if (reservation == null)
             {
                 return NotFound();
             }
 
-            return reservation;
+            return Ok(reservation);
         }
 
-        // PUT: api/Reservations/5
-        /// <summary>
-        /// Update a specific Reservation.
-        /// </summary>
-        /// <param name="id">The id of the selected reservation.</param>
-        /// <param name="reservation">The updated Reservation.</param>
-        /// <returns>No content.</returns>
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
+            // PUT: api/Reservations/5
+            /// <summary>
+            /// Update a specific Reservation.
+            /// </summary>
+            /// <param name="id">The id of the selected reservation.</param>
+            /// <param name="reservation">The updated Reservation.</param>
+            /// <returns>No content.</returns>
+            // To protect from overposting attacks, enable the specific properties you want to bind to, for
+            // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+            [HttpPut("{id}")]
         public async Task<IActionResult> PutReservation(long id, Reservation reservation)
         {
             if (id != reservation.Id)
